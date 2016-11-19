@@ -11,7 +11,10 @@ class Optimizer:
         # Model Parameters 
         # self.varType = LpInteger # depreciated; it's an expectation
         self.varType = LpContinuous # for debug
-        self.maxYear = 21
+        self.maxYear = 25
+
+        self.phdCompleteRate = 1.0 - 5.0 / 38.0
+        self.msCompleteRate = 1.0 - 4.0 / 102.0
 
     # Data load
     def loadData(self, sepsFile = "seps.csv", reqsFile = "reqs.csv"):
@@ -24,8 +27,7 @@ class Optimizer:
 
         self.reqs = pd.read_csv(reqsFile)
 
-        self.phdCompleteRate = 1.0 - 5.0 / 38.0
-        self.msCompleteRate = 1.0 - 4.0 / 102.0
+
 
 
     def solve(self):
@@ -143,7 +145,7 @@ class Optimizer:
                         dual=1, 
                         strong=5, 
                         cuts = 1,
-                        maxSeconds = 10,
+                        maxSeconds = 100,
                         options = []))
 
         print LpStatus[prob.status]
@@ -157,7 +159,7 @@ class Optimizer:
             for i in range(len(self.ms_send)):
                 row = "{0:2d},{1:2d},{2:2d},{3:2d},{4:2d},{5:2d}\n"
                 row = row.format(i,int(math.ceil(self.ms_send[i].varValue)),*[int(math.ceil(var.varValue)) for var in self.phd_send[i].values()])
-                print row
+                #print row
                 f.write(row)
         with open(inventoryOut,"w") as f:
             f.write("Year,BS,MS,PhD\n")
@@ -167,5 +169,5 @@ class Optimizer:
                 m = int(math.ceil(sum([var.varValue for var in self.ms[i].values()])))
                 p = int(math.ceil(sum([var.varValue for var in self.phd[i].values()])))
                 row = row.format(i,b,m,p)
-                print row
+                #print row
                 f.write(row)

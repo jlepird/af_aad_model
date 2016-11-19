@@ -1,11 +1,16 @@
-from optimizer import Optimizer
+from datawrangler import Wrangler
+from optimizer    import Optimizer
 import os
+
+os.chdir("../data")
+data = Wrangler()
+
 
 opt = Optimizer()
 
-os.chdir("../data")
-
-opt.loadData()
+rho = 0.25
+opt.seps = data.aggregateSeps(rho)
+opt.reqs = data.aggregateReqs(rho)
 
 opt.solve()
 
