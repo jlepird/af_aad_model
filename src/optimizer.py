@@ -30,7 +30,7 @@ class Optimizer:
 
 
 
-    def solve(self):
+    def solve(self, maxSeconds = 10):
 
         ########################
 
@@ -145,7 +145,7 @@ class Optimizer:
                         dual=1, 
                         strong=5, 
                         cuts = 1,
-                        maxSeconds = 100,
+                        maxSeconds = maxSeconds,
                         options = []))
 
         print LpStatus[prob.status]
@@ -155,19 +155,28 @@ class Optimizer:
     def output(self, sendsOut = "sends.csv", inventoryOut = "inventory.csv"):
 
         with open(sendsOut,"w") as f:
-            f.write("Year,MS,PhD_0,PhD_1,PhD_2,Phd_3\n")
+            names = ["Year","MS","PhD_0","PhD_1","PhD_2","Phd_3"]
+            send = pd.DataFrame(columns = names)
+            f.write(",".join(names) + "\n")
             for i in range(len(self.ms_send)):
                 row = "{0:2d},{1:2d},{2:2d},{3:2d},{4:2d},{5:2d}\n"
-                row = row.format(i,int(math.ceil(self.ms_send[i].varValue)),*[int(math.ceil(var.varValue)) for var in self.phd_send[i].values()])
-                #print row
+                data = [i, int(math.ceil(self.ms_send[i].varValue))]
+                data.extend([int(math.ceil(var.varValue)) for var in self.phd_send[i].values()])
+                row = row.format(*data)
+                send = send.append(dict(zip(names, data)), ignore_index=True)
                 f.write(row)
         with open(inventoryOut,"w") as f:
-            f.write("Year,BS,MS,PhD\n")
+            names = ["Year", "BS" ,"MS" ,"PhD"]
+            f.write(",".join(names) + "\n")
+            inventory = pd.DataFrame(columns = names)
             for i in range(self.maxYear):
                 row = "{0:2d},{1:2d},{2:2d},{3:3d}\n"
                 b = int(math.ceil(self.bs[i][0].varValue))
                 m = int(math.ceil(sum([var.varValue for var in self.ms[i].values()])))
                 p = int(math.ceil(sum([var.varValue for var in self.phd[i].values()])))
-                row = row.format(i,b,m,p)
+                out = [i, b, m, p]
+                row = row.format(*out)
                 #print row
                 f.write(row)
+                inventory = inventory.append(dict(zip(names, out)), ignore_index=True)
+        return send, inventory

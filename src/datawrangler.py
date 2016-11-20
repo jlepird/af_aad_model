@@ -31,12 +31,15 @@ class Wrangler:
                 if val2 < val1:
                     out = val2 / val1
                 self.seps.loc[i, "SepRate"] = out
-                
+    
+        self.seps["Year"] = np.round(self.seps["Date"] / 100)                
+        
         # Pre-process the requirements data
         self.reqs = self.reqs[self.reqs["month_id"] % 100 == 9]  
+        self.reqs["Year"] = np.round(self.reqs["month_id"] / 100)
 
     def aggregateSeps(self, rho):
-        return self.seps.groupby("YOS", as_index=False).aggregate({"SepRate": lambda x: np.percentile(x, rho * 100)})
+        return self.seps.groupby("YOS", as_index = False).aggregate({"SepRate": lambda x: np.percentile(x, rho * 100)})
     
     def aggregateReqs(self, rho):
         return self.reqs.groupby(["Degree", "Grade"], as_index = False).aggregate({"Count": lambda x: np.percentile(x, rho * 100)})
