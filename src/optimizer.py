@@ -15,6 +15,8 @@ class Optimizer:
 
         self.phdCompleteRate = 1.0 - 5.0 / 38.0
         self.msCompleteRate = 1.0 - 4.0 / 102.0
+        
+        self.objective = "NA"
 
     # Data load
     def loadData(self, sepsFile = "seps.csv", reqsFile = "reqs.csv"):
@@ -150,6 +152,7 @@ class Optimizer:
 
         print LpStatus[prob.status]
         print "Objective =", value(prob.objective)
+        self.objective = value(prob.objective)
 
 
     def output(self, sendsOut = "sends.csv", inventoryOut = "inventory.csv"):
