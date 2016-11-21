@@ -1,4 +1,4 @@
-import pandas as pd
+﻿import pandas as pd
 import numpy as np
 
 class Wrangler:
@@ -32,7 +32,8 @@ class Wrangler:
                     out = val2 / val1
                 self.seps.loc[i, "SepRate"] = out
     
-        self.seps["Year"] = np.round(self.seps["Date"] / 100)                
+        self.seps["Year"] = np.round(self.seps["Date"] / 100)
+        self.seps = self.seps[[val not in [2006, 2007, 2008] for val in self.seps["Year"]]]
         
         # Pre-process the requirements data
         self.reqs = self.reqs[self.reqs["month_id"] % 100 == 9]  

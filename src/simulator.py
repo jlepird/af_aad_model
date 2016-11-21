@@ -25,7 +25,7 @@ class Simulator:
         self.degreeDict = {"AWARDED MASTERS DEGREE" : self.ms,
                            "DOCTORATE"              : self.phd,
                            "NONE LISTED"            : self.bs}
-        self.columns = ["Grade", "Level", "fillRate"]
+        self.columns = ["Grade", "Level", "Count", "fillRate"]
         self.simData = pd.DataFrame(columns = self.columns)
         
         self.years = self.intersect(self.data.reqs["Year"], self.data.seps["Year"])        
@@ -63,7 +63,7 @@ class Simulator:
             if reqs["Grade"].iloc[i] == "LTC":
                 req /= 0.75
             rate = count / req 
-            self.simData = self.simData.append(dict(zip(self.columns, [reqs["Grade"].iloc[i], reqs["Degree"].iloc[i], rate])), ignore_index = True)
+            self.simData = self.simData.append(dict(zip(self.columns, [reqs["Grade"].iloc[i], reqs["Degree"].iloc[i], req, rate])), ignore_index = True)
             
     def run(self, numYears = 1000):
 

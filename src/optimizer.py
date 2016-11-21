@@ -105,8 +105,8 @@ class Optimizer:
 
             # Factor in utilization rates
             if self.reqs["Degree"][i] == "DOCTORATE" and self.reqs["Grade"][i] == "LTC":
-                num *= 1.0
-                # num *= 2.375
+                # num *= 1.0
+                num *= 2.375
         #    if reqs["Degree"][i] == "DOCTORATE" and reqs["Grade"][i] == "MAJ":
         #        num *= 1.2
 
@@ -141,14 +141,14 @@ class Optimizer:
                 prob += self.phd_send[i][jj] == 0
         ##### Solution
 
-        prob.solve(COIN(msg = 1, 
-                        threads = 4, 
-                        presolve = 1, 
-                        dual=1, 
-                        strong=5, 
-                        cuts = 1,
-                        maxSeconds = maxSeconds,
-                        options = []))
+        prob.solve(GLPK(msg = 1, 
+                        #threads = 2, 
+                        #presolve = 1, 
+                        #dual=1, 
+                        #strong=5, 
+                        #cuts = 1,
+                        #maxSeconds = maxSeconds,
+                        options = ["--tmlim 030 --pcost --cuts"]))
 
         print LpStatus[prob.status]
         print "Objective =", value(prob.objective)

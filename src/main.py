@@ -8,11 +8,11 @@ data = Wrangler()
 
 opt = Optimizer()
 
-for rho in [0.25, 0.3, 0.4, 0.5]: 
+for rho in [0.25, 0.275, 0.3, 0.4, 0.5]: 
     opt.seps = data.aggregateSeps(rho)
     opt.reqs = data.aggregateReqs(rho)
     
-    opt.solve(maxSeconds = 100)
+    opt.solve(maxSeconds = 10)
     
     os.chdir("../out")
     policy, inventory = opt.output()
